@@ -3,6 +3,8 @@ import { Metadata } from 'next'
 
 import { api } from '@/data/api'
 import { Product } from '@/data/types/product'
+import { AddToCartButton } from '@/components/add-to-cart-button'
+import React from 'react'
 
 interface ProductProps {
   params: {
@@ -10,14 +12,17 @@ interface ProductProps {
   }
 }
 
-async function getProduct(slug: string): Promise<Product> {
+async function getProduct(slug?: string): Promise<Product> {
+  if(!slug){
+    return {} as Product
+  }
   const response = await api(`/products/${slug}`, {
     next: {
       revalidate: 60 * 60, // 1 hour
     },
   });
 
-  return await response.json()
+  return  await response.json()
 }
 
 export async function generateMetadata({
@@ -26,7 +31,7 @@ export async function generateMetadata({
   const product = await getProduct(params.slug)
 
   return {
-    title: product.title,
+    title: product?.title,
   }
 }
 
@@ -40,7 +45,7 @@ export async function generateMetadata({
 // }
 
 export default async function ProductPage({ params }: ProductProps) {
-  const product = await getProduct(params.slug)
+  const product = await getProduct(params?.slug)
 
   return (
     <div className="relative grid max-h-[860px] grid-cols-3">
@@ -107,6 +112,8 @@ export default async function ProductPage({ params }: ProductProps) {
             </button>
           </div>
         </div>
+
+        <AddToCartButton productId={product.id} />
       </div>
     </div>
   )
