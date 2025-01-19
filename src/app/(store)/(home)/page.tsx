@@ -10,7 +10,15 @@ async function getFeaturedProducts(): Promise<Product[]> {
     },
   })
 
-  return await response.json()
+  if (!response.ok) {
+    throw new Error(`Failed to fetch featured products: ${response.statusText}`)
+  }
+
+  try {
+    return await response.json()
+  } catch (error) {
+    throw new Error(`Failed to parse JSON: ${error?.message ?? 'Unknown error'}`)
+  }
 }
 
 export default async function Home() {
