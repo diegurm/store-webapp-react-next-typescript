@@ -7,7 +7,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ['github.com'],
+    domains: ['github.com','cdn.mockapi.com'],
   },
 }
 
